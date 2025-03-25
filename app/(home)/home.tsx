@@ -4,15 +4,20 @@ import { Button, Card, Text, Appbar } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
 import { router } from 'expo-router';
 
+interface Task {
+  id: string;
+  title: string;
+  description: string;
+}
+
+
 export default function HomeScreen() {
-  const { signOut } = useAuth();
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchTasks = async () => {
     setRefreshing(true);
     try {
-      // Replace with actual API call
       const mockTasks = [
         { id: '1', title: 'Complete project', description: 'Finish the task manager app' },
         { id: '2', title: 'Buy groceries', description: 'Milk, eggs, bread' },
@@ -30,11 +35,7 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={{ flex: 1 }}>
-      <Appbar.Header>
-        <Appbar.Content title="My Tasks" />
-        <Appbar.Action icon="logout" onPress={signOut} />
-      </Appbar.Header>
+    <View className='flex-1 mt-5'>
       <FlatList
         data={tasks}
         keyExtractor={(item) => item.id}
@@ -44,7 +45,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <Card
             style={{ margin: 8 }}
-            onPress={() => router.push(`/(tasks)/${item.id}`)}
+            onPress={() => router.push(`/(home)/${item.title}`)}
           >
             <Card.Title title={item.title} subtitle={item.description} />
           </Card>
@@ -56,8 +57,9 @@ export default function HomeScreen() {
         }
       />
       <Button
-        mode="contained"
         style={{ margin: 16 }}
+        mode="contained"
+        onPress={() => router.push('/(home)/add')}
       >
         Add Task
       </Button>

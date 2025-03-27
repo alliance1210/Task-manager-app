@@ -1,25 +1,33 @@
 import { AuthProvider } from "@/context/AuthContext";
-import { Stack } from "expo-router";
+import { Slot, SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
 
 export default function RootLayout() {
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    // Prevent auto-hiding splash screen
+    SplashScreen.preventAutoHideAsync();
+    
+    // Simulate loading (replace with your actual initialization)
+    const timer = setTimeout(() => {
+      setIsReady(true);
+      SplashScreen.hideAsync();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isReady) {
+    return null; // Or your custom splash screen component
+  }
+
   return (
-    <>
-      {/* Set StatusBar style based on the theme */}
-      <StatusBar style={"dark"} />
-      <AuthProvider>
-        <Stack>
-          <Stack.Screen
-            name="index"
-            options={{ title: "Sign in", headerShown: false }}
-          />
-          <Stack.Screen
-            name="signup"
-            options={{ title: "Sign up", headerShown: false }}
-          />
-          <Stack.Screen name="(home)" options={{ headerShown: false }} />
-        </Stack>
-      </AuthProvider>
-    </>
+    <AuthProvider>
+      <StatusBar style="dark" />
+      <Stack screenOptions={{headerShown:false}}/>
+      {/* <Slot /> */}
+    </AuthProvider>
   );
 }

@@ -14,7 +14,7 @@ interface Task {
 export default function HomeScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [refreshing, setRefreshing] = useState(false);
-
+ const {signOut} = useAuth();
   const fetchTasks = async () => {
     setRefreshing(true);
     try {
@@ -62,6 +62,13 @@ export default function HomeScreen() {
         onPress={() => router.push('/(home)/add')}
       >
         Add Task
+      </Button>
+      <Button
+        style={{ margin: 16 }}
+        mode="contained"
+        onPress={() => signOut()}
+      >
+        Signout
       </Button>
     </View>
   );

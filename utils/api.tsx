@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://your-backend-url.com/api';
+const API_BASE_URL = 'http://10.100.2.34:5000/';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -64,7 +64,7 @@ interface DeleteTaskResponse {
 
 export const login = async (email: string, password: string): Promise<LoginResponse> => {
   try {
-    const response: AxiosResponse<LoginResponse> = await api.post('/auth/login', { email, password });
+    const response: AxiosResponse<LoginResponse> = await api.post('auth/login', { email, password });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -77,7 +77,7 @@ export const login = async (email: string, password: string): Promise<LoginRespo
 
 export const signup = async (name: string, email: string, password: string): Promise<SignupResponse> => {
   try {
-    const response: AxiosResponse<SignupResponse> = await api.post('/auth/signup', { name, email, password });
+    const response: AxiosResponse<SignupResponse> = await api.post('auth/signup', { name, email, password });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -90,7 +90,7 @@ export const signup = async (name: string, email: string, password: string): Pro
 
 export const getTasks = async (): Promise<GetTasksResponse> => {
   try {
-    const response: AxiosResponse<GetTasksResponse> = await api.get('/tasks');
+    const response: AxiosResponse<GetTasksResponse> = await api.get('tasks');
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -103,7 +103,7 @@ export const getTasks = async (): Promise<GetTasksResponse> => {
 
 export const addTask = async (taskData: Omit<Task, 'id'>): Promise<AddTaskResponse> => {
   try {
-    const response: AxiosResponse<AddTaskResponse> = await api.post('/tasks', taskData);
+    const response: AxiosResponse<AddTaskResponse> = await api.post('tasks', taskData);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -116,7 +116,7 @@ export const addTask = async (taskData: Omit<Task, 'id'>): Promise<AddTaskRespon
 
 export const deleteTask = async (taskId: string): Promise<DeleteTaskResponse> => {
   try {
-    const response: AxiosResponse<DeleteTaskResponse> = await api.delete(`/tasks/${taskId}`);
+    const response: AxiosResponse<DeleteTaskResponse> = await api.delete(`tasks/${taskId}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

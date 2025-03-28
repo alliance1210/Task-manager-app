@@ -1,25 +1,26 @@
 import { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Button, TextInput, Text } from 'react-native-paper';
 import { router } from 'expo-router';
+import { addTask } from '@/utils/api';
 
 export default function AddTaskScreen() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
-
+  
   const handleAddTask = async () => {
     setLoading(true);
     try {
-      // Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      router.back();
+      await addTask({ title, description });
+      router.push('/(home)'); 
     } catch (error) {
-      console.error('Failed to add task', error);
+      Alert.alert('Error', error instanceof Error ? error.message : 'Failed to create task');
     } finally {
       setLoading(false);
     }
   };
+ 
 
   return (
     <View style={styles.container}>

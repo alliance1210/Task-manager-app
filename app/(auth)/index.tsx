@@ -10,11 +10,11 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const { signIn, isLoading, error } = useAuth();
 
-  useEffect(() => {
-    if (error) {
-      Alert.alert('Login Error', error);
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     Alert.alert('Login Error', error);
+  //   }
+  // }, [error]);
 
   return (
     <View className="flex-1 bg-background p-6 justify-center" >

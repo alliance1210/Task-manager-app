@@ -3,24 +3,25 @@ import { View, TouchableOpacity,Text } from 'react-native';
 import { Button, TextInput  } from 'react-native-paper';
 import { router } from 'expo-router';
 import '../global.css'
+import { useAuth } from '@/context/AuthContext';
 export default function SignupScreen() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handleSignup = async () => {
-    setLoading(true);
-    try {
-      // Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      router.replace('/(auth)/login');
-    } catch (error) {
-      console.error('Signup failed', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {signUp} = useAuth();
+  // const handleSignup = async () => {
+  //   setLoading(true);
+  //   try {
+      
+  //     await new Promise(resolve => setTimeout(resolve, 1000));
+  //     router.replace('/(auth)/login');
+  //   } catch (error) {
+  //     console.error('Signup failed', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <View className="flex-1 bg-background p-6 justify-center">
@@ -91,7 +92,7 @@ export default function SignupScreen() {
 
         <Button
           mode="contained"
-          onPress={handleSignup}
+          onPress={()=>signUp(name,email,password)}
           loading={loading}
           disabled={loading}
           className="py-3 rounded-lg mt-5"

@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosResponse } from 'axios';
 
-// const API_BASE_URL = 'http://10.100.2.34:5000/';
-const API_BASE_URL = 'http://192.168.29.150:5000/';
+const API_BASE_URL = 'http://10.100.2.34:5000/';
+// const API_BASE_URL = 'http://192.168.29.150:5000/';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -46,7 +46,7 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  completed: boolean;
+  // completed: boolean;
 }
 
 interface GetTasksResponse {
@@ -91,7 +91,7 @@ export const signup = async (name: string, email: string, password: string): Pro
 
 export const getTasks = async (): Promise<GetTasksResponse> => {
   try {
-    const response: AxiosResponse<GetTasksResponse> = await api.get('tasks');
+    const response: AxiosResponse<GetTasksResponse> = await api.get('tasks/');
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -104,11 +104,14 @@ export const getTasks = async (): Promise<GetTasksResponse> => {
 
 export const addTask = async (taskData: Omit<Task, 'id'>): Promise<AddTaskResponse> => {
   try {
-    const response: AxiosResponse<AddTaskResponse> = await api.post('tasks', taskData);
+    const response: AxiosResponse<AddTaskResponse> = await api.post('tasks/', taskData);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      console.log(error.response?.data);
         throw error.response?.data || error.message;
+
       } else {
         throw error;
       }

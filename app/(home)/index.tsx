@@ -18,17 +18,17 @@ interface Task {
 export default function HomeScreen() {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [refreshing, setRefreshing] = useState(false);
- const {signOut} = useAuth();
+  const { signOut } = useAuth();
   const fetchTasks = async () => {
     setRefreshing(true);
     try {
       const response = await getTasks();
       const formattedTasks: Task[] = Array.isArray(response)
         ? response.map((task: any) => ({
-            _id: task._id,
-            title: task.title,
-            description: task.description,
-          }))
+          _id: task._id,
+          title: task.title,
+          description: task.description,
+        }))
         : [];
       setTasks(formattedTasks);
     } catch (error) {
@@ -53,7 +53,7 @@ export default function HomeScreen() {
         renderItem={({ item }) => (
           <Card
             style={{ margin: 8 }}
-            onPress={() => router.push(`/(home)/${item.title}`)}
+            onPress={() => router.push(`/(home)/${item._id}`)}
           >
             <Card.Title title={item.title} subtitle={item.description} />
           </Card>
@@ -64,20 +64,16 @@ export default function HomeScreen() {
           </Text>
         }
       />
-      <Button
-        style={{ margin: 5 }}
-        mode="contained"
-        onPress={() => router.push('/(home)/add')}
-      >
-        Add Task
-      </Button>
-      <Button
-        style={{ margin: 5 }}
-        mode="contained"
-        onPress={() => signOut()}
-      >
-        Signout
-      </Button>
+      <View className='mb-10 pt-4 m-2 '>
+        <Button
+          mode="contained"
+          onPress={() => router.push('/(home)/add')}
+          theme={{ colors: { primary: '#30a6d6' } }}
+          icon="plus"          
+        >
+          Add Task
+        </Button>
+      </View>
     </View>
   );
 }

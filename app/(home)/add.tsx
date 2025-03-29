@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { Button, TextInput, Text } from 'react-native-paper';
+import { View, StyleSheet, Alert, Text } from 'react-native';
+import { Button, TextInput, } from 'react-native-paper';
 import { router } from 'expo-router';
 import { addTask } from '@/utils/api';
 
@@ -24,19 +24,21 @@ export default function AddTaskScreen() {
 
   return (
     <View style={styles.container}>
-      <Text variant="headlineSmall" style={styles.title}>
+      <Text className='text-4xl text-primary text-4xl font-bold' style={styles.title}>
         Add New Task
       </Text>
       <TextInput
         label="Title"
         value={title}
         onChangeText={setTitle}
+        theme={{ colors: { primary: '#30a6d6' } }}
         mode="outlined"
         style={styles.input}
       />
       <TextInput
         label="Description"
         value={description}
+        theme={{ colors: { primary: '#30a6d6' } }}
         onChangeText={setDescription}
         mode="outlined"
         multiline
@@ -49,6 +51,7 @@ export default function AddTaskScreen() {
         loading={loading}
         disabled={loading || !title}
         style={styles.button}
+        theme={{ colors: { primary: '#30a6d6' } }}
       >
         Save Task
       </Button>

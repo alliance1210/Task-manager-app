@@ -1,102 +1,117 @@
 import { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Button, Text, Card, Appbar } from 'react-native-paper';
+import { View, Alert } from 'react-native';
+import { Button, Text, Card } from 'react-native-paper';
 import { useLocalSearchParams, router } from 'expo-router';
+import { deleteTask, getTask, Task, updateTask } from '@/utils/api';
+import { EditModal } from '@/components/EditModal';
 
 export default function TaskDetailScreen() {
   const { id } = useLocalSearchParams();
-  const [task, setTask] = useState(null);
+  const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showEditModal, setShowEditModal] = useState(false);
+
+  const handleDelete = async () => {
+    try {
+      if (typeof id === 'string') {
+        await deleteTask(id);
+        router.replace('/');
+      }
+    } catch (error) {
+      Alert.alert('Failed to delete task', error instanceof Error ? error.message : String(error));
+    }
+  };
 
   useEffect(() => {
     const fetchTask = async () => {
       try {
-        // Replace with actual API call
-        const mockTask = {
-          id,
-          title: `Task ${id}`,
-          description: `Details for task ${id}`,
-          createdAt: new Date().toISOString(),
-        };
-        setTask(mockTask);
+        if (typeof id === 'string') {
+          const data = await getTask(id);
+          setTask(data);
+        }
       } catch (error) {
-        console.error('Failed to fetch task', error);
+        Alert.alert('Loading failed', error instanceof Error ? error.message : String(error));
       } finally {
         setLoading(false);
       }
     };
+    
     fetchTask();
-  }, [id]);
+  }, [id]); 
 
-  const handleDelete = async () => {
+  const handleUpdate = async (updateData: { title: string; description: string }) => {
+    if (typeof id !== 'string') return;
+    
     try {
-      // Replace with actual API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      router.replace('/(tasks)');
+      const updatedTask = await updateTask(id, updateData);
+      setTask(updatedTask);
     } catch (error) {
-      console.error('Failed to delete task', error);
+      Alert.alert('Update failed', error instanceof Error ? error.message : String(error));
     }
   };
 
   if (loading) {
     return (
-      <View style={styles.container}>
-        <Text>Loading...</Text>
+      <View className="flex-1 bg-background justify-center items-center">
+        <Text className="text-primary">Loading...</Text>
       </View>
     );
   }
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* <Appbar.Header>
-        <Appbar.BackAction onPress={() => router.back()} />
-        <Appbar.Content title="Task Details" />
-      </Appbar.Header> */}
-      <Card style={{ margin: 16 }}>
-        <Card.Title title={task.title} />
-        <Card.Content>
-          <Text variant="bodyMedium" style={{ marginBottom: 16 }}>
-            {task.description}
+    <View className="flex-1">
+    {/* Dark overlay when modal is visible */}
+    {showEditModal && (
+      <View className="absolute inset-0 bg-black opacity-50 z-10" />
+    )}
+
+    <View className={`flex-1 bg-background p-4 ${showEditModal ? 'opacity-100' : ''}`}>
+      <Card className="m-4 bg-white">
+        <Card.Title 
+          title={task?.title} 
+          titleStyle={{ color: '#30a6d6', fontSize: 24 }}
+          className="border-b border-gray-200"
+        />
+        <Card.Content className="p-4">
+          <Text className="text-textSecondary text-base mb-4">
+            {task?.description}
           </Text>
-          <Text variant="labelSmall">
-            Created: {new Date(task.createdAt).toLocaleString()}
+          <Text className="text-gray-500 text-sm">
+            Created: {new Date(task?.createdAt || '').toLocaleString()}
+          </Text>
+          <Text className="text-gray-500 text-sm">
+            Last Update: {new Date(task?.updatedAt || '').toLocaleString()}
           </Text>
         </Card.Content>
       </Card>
-      <View style={styles.actions}>
+
+      <View className="flex-row justify-around px-4 gap-4 mt-5">
         <Button
           mode="contained"
-          onPress={() => router.push(`/(tasks)/${id}/edit`)}
-          style={styles.button}
+          onPress={() => setShowEditModal(true)}
+          className="flex-1 rounded-lg py-2"
+          theme={{ colors: { primary: '#30a6d6' } }}
         >
           Edit
         </Button>
         <Button
           mode="outlined"
           onPress={handleDelete}
-          style={styles.button}
+          className="flex-1 rounded-lg py-2"
           textColor="#ff0000"
+          theme={{ colors: { primary: '#ff0000' } }}
         >
           Delete
         </Button>
       </View>
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 16,
-  },
-  button: {
-    flex: 1,
-    marginHorizontal: 8,
-  },
-});
+      <EditModal 
+        visible={showEditModal}
+        task={task}
+        onDismiss={() => setShowEditModal(false)}
+        onUpdate={handleUpdate}
+      />
+    </View>
+  </View>
+);
+}

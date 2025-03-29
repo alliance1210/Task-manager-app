@@ -59,6 +59,7 @@ export default function LoginScreen() {
             left={<TextInput.Icon icon="lock" color="#7d7d7d" />}
             style={{ height: 60 }}
             contentStyle={{ height: 60 }}
+            autoCapitalize="none"
             autoComplete="password"
             textContentType="password"
             importantForAutofill="yes"
@@ -66,11 +67,11 @@ export default function LoginScreen() {
           />
         </View>
 
-        <TouchableOpacity className="items-end ">
+        {/* <TouchableOpacity className="items-end ">
           <Text className="text-primary text-m font-medium">
             Forgot Password?
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <Button
           mode="contained"

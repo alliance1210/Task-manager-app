@@ -1,8 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosResponse } from 'axios';
 
-const API_BASE_URL = 'http://10.100.2.34:5000/';
+// const API_BASE_URL = 'http://10.100.2.34:5000/';
 // const API_BASE_URL = 'http://192.168.29.150:5000/';
+const API_BASE_URL = 'https://task-manager-backend-uk3y.onrender.com/';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -42,11 +43,12 @@ interface SignupResponse {
   };
 }
 
-interface Task {
+export interface Task {
   id: string;
   title: string;
   description: string;
-  // completed: boolean;
+  createdAt?: Date;
+  updatedAt?:Date;
 }
 
 interface GetTasksResponse {
@@ -101,15 +103,26 @@ export const getTasks = async (): Promise<GetTasksResponse> => {
       }
   }
 };
-
-export const addTask = async (taskData: Omit<Task, 'id'>): Promise<AddTaskResponse> => {
+export const getTask = async (id: string): Promise<Task> => {
   try {
-    const response: AxiosResponse<AddTaskResponse> = await api.post('tasks/', taskData);
-    console.log(response.data);
+    const response: AxiosResponse<Task> = await api.get(`tasks/${id}`);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.log(error.response?.data);
+      throw error.response?.data || error.message;
+    } else {
+      throw error;
+    }
+  }
+};
+export const addTask = async (taskData: Omit<Task, 'id'>): Promise<AddTaskResponse> => {
+  try {
+    const response: AxiosResponse<AddTaskResponse> = await api.post('tasks/', taskData);
+    // console.log(response.data);
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      // console.log(error.response?.data);
         throw error.response?.data || error.message;
 
       } else {
@@ -128,5 +141,20 @@ export const deleteTask = async (taskId: string): Promise<DeleteTaskResponse> =>
       } else {
         throw error;
       }
+  }
+};
+export const updateTask = async (id: string, { title, description }: { title: string; description: string }): Promise<Task> => {
+  try {
+    const response: AxiosResponse<Task> = await api.put(`tasks/${id}`, {
+      title,
+      description
+    });
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data || error.message;
+    } else {
+      throw error;
+    }
   }
 };

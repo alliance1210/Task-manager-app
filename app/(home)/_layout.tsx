@@ -1,12 +1,12 @@
 import { useAuth } from "@/context/AuthContext";
-import { router, Stack } from "expo-router";
+import { router, Slot, Stack } from "expo-router";
 import { useEffect } from "react";
-import { Appbar } from "react-native-paper";
-
+import { Alert, TouchableOpacity } from "react-native";
+import { IconButton } from "react-native-paper";
 export default function Layout() {
   const { signOut, userToken } = useAuth();
-  const isUserLoggedIn = ()=>{
-    if (userToken===null) {
+  const isUserLoggedIn = () => {
+    if (userToken === null) {
       router.replace("/(auth)/");
     }
   }
@@ -14,13 +14,24 @@ export default function Layout() {
     isUserLoggedIn();
   }, [userToken]);
   return (
-    <Stack initialRouteName="index">
+    <Stack initialRouteName="index" screenOptions={{
+      headerRight: () => (
+        <IconButton
+        icon="logout"
+        size={24}
+        onPressIn={() => { 
+          signOut(); 
+        }}
+        iconColor="black"
+      />
+      ),
+    }}>
       <Stack.Screen
         name="index"
-        options={{ title: "Task Manager", headerShown: true,headerRight: () => (
-          <Appbar.Action icon="logout" onPress={(()=>console.log("this"))} />
-        ), }}
-        
+        options={{
+          title: "Task Manager", headerShown: true
+        }}
+
       />
       <Stack.Screen
         name="[id]"
@@ -30,6 +41,7 @@ export default function Layout() {
         name="add"
         options={{ title: "Add", headerShown: true }}
       />
+
     </Stack>
   );
 }

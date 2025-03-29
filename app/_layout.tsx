@@ -27,7 +27,6 @@ export default function RootLayout() {
     <AuthProvider>
       <StatusBar style="dark" />
       <Stack screenOptions={{headerShown:false}}/>
-      {/* <Slot /> */}
     </AuthProvider>
   );
 }

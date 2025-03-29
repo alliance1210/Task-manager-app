@@ -93,7 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     try {
       await AsyncStorage.removeItem("userToken");
       setUserToken(null);
-      // router.replace("../(auth)/index");
+      // router.replace("/(auth)/");
     } catch (error) {
       handleError("Logout failed. Please try again.", error);
     } finally {
